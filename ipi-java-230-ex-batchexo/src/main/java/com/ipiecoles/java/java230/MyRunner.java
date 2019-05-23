@@ -80,6 +80,7 @@ public class MyRunner implements CommandLineRunner {
             }
         }
 
+        employeRepository.save(employes);
         return employes;
     }
 
@@ -178,11 +179,16 @@ public class MyRunner implements CommandLineRunner {
             infosEmploye(technicien, ligneTechnicien, splitByElement);
 
             if ((splitByElement.get(6)).matches(REGEX_MATRICULE_MANAGER)){
-                if(managerRepository.findByMatricule(splitByElement.get(6)) != null) {
+                if(managerRepository.findByMatricule(splitByElement.get(6)) != null ) {
                     technicien.setManager(managerRepository.findByMatricule(splitByElement.get(6)));
                 } else {
                     throw new BatchException("Le manager de matricule " + splitByElement.get(6) + " n'a pas été trouvé dans le fichier ou en base de données => " + ligneTechnicien);
                 }
+
+
+                /*for(int i = 0; i < employes.size() ; i++){
+                    if()
+                }*/
 
             } else {
                 throw new BatchException("La châine " + splitByElement.get(6) + " ne respecte pas l'expression régulière ^M[0-9]{5}$ => " + ligneTechnicien);
