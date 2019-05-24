@@ -51,6 +51,7 @@ public class MyRunner implements CommandLineRunner {
     public void run(String... strings) {
         String fileName = "employes.csv";
         readFile(fileName);
+        employeRepository.save(employes);
         //readFile(strings[0]);
     }
 
@@ -63,6 +64,7 @@ public class MyRunner implements CommandLineRunner {
         Stream<String> stream;
         logger.info("Lecture du fichier " + fileName);
 
+        // Ouvre le fichiez csv afin d'en lire les données //
         try {
             stream = Files.lines(Paths.get(new ClassPathResource(fileName).getURI()));
         } catch (IOException e){
@@ -70,17 +72,18 @@ public class MyRunner implements CommandLineRunner {
             return new ArrayList<>();
         }
 
+        // Initialise le message d'erreur de l'exception lorsqu'une exception est catch //
+        // Sinon traitement des lignes du fichier                                       //
         List<String> ligne = stream.collect(Collectors.toList());
         logger.info(ligne.size() + " lignes lues");
         for(int i = 0; i < ligne.size(); i++){
             try {
                 processLine(ligne.get(i));
             } catch (BatchException e) {
-               logger.error("Ligne " + (i+1) + " : "  + e.getMessage());
+               logger.error("Ligne " + (i+1) + " : "  + e.getMessage() + " => " + ligne.get(i));
             }
         }
 
-        employeRepository.save(employes);
         return employes;
     }
 
@@ -92,14 +95,18 @@ public class MyRunner implements CommandLineRunner {
     private void processLine(String ligne) throws BatchException {
         String firstCarac = ligne.substring(0,1);
         switch (firstCarac){
+
+            // La lettre T correspond à un Technicien //
             case "T":
                 processTechnicien(ligne);
                 break;
 
+            // La lettre M correspond à un Manager    //
             case "M":
                 processManager(ligne);
                 break;
 
+            // La lettre C correspond à un Commercial //
             case "C":
                 processCommercial(ligne);
                 break;
@@ -115,27 +122,34 @@ public class MyRunner implements CommandLineRunner {
      * @throws BatchException s'il y a un problème sur cette ligne
      */
     private void processCommercial(String ligneCommercial) throws BatchException {
+
         List<String> splitByElement = new ArrayList<>(Arrays.asList(ligneCommercial.split(",")));
         Commercial commercial = new Commercial();
 
+        // Vérifie que la ligne dispose du bon nombre d'élément //
+        // Renvoie une Exception si False                       //
         if (splitByElement.size() == NB_CHAMPS_COMMERCIAL) {
 
             infosEmploye(commercial, ligneCommercial, splitByElement);
 
+            // Effectue la conversion du Grade du type String à Double           //
+            // Renvoie une erreur si : -La conversion de format echoue           //
             try {
                 commercial.setCaAnnuel(Double.parseDouble(splitByElement.get(5)));
             } catch (Exception e) {
-                throw new BatchException("Le chiffre d'affaire du commercial est incorrect : " + splitByElement.get(5) + " => " + ligneCommercial);
+                throw new BatchException("Le chiffre d'affaire du commercial est incorrect : " + splitByElement.get(5));
             }
 
+            // Effectue la conversion du Grade du type String à Double           //
+            // Renvoie une erreur si : -La conversion de format echoue           //
             try {
                 commercial.setPerformance(Integer.parseInt(splitByElement.get(6)));
             } catch (Exception e) {
-                throw new BatchException("La performance du commercial est incorrecte : " + splitByElement.get(6) + " => " + ligneCommercial);
+                throw new BatchException("La performance du commercial est incorrecte : " + splitByElement.get(6));
             }
 
         } else {
-            throw new BatchException("La ligne commercial ne contient pas 7 éléments mais " + splitByElement.size() + " => " + ligneCommercial);
+            throw new BatchException("La ligne commercial ne contient pas 7 éléments mais " + splitByElement.size());
         }
     }
 
@@ -145,15 +159,18 @@ public class MyRunner implements CommandLineRunner {
      * @throws BatchException s'il y a un problème sur cette ligne
      */
     private void processManager(String ligneManager) throws BatchException {
-        Manager manager = new Manager();
 
+        Manager manager = new Manager();
         List<String> splitByElement = new ArrayList<>(Arrays.asList(ligneManager.split(",")));
+
+        // Vérifie que la ligne dispose du bon nombre d'élément //
+        // Renvoie une Exception si False                       //
         if (splitByElement.size() == NB_CHAMPS_MANAGER) {
 
          infosEmploye(manager, ligneManager, splitByElement);
 
         }else {
-            throw new BatchException("La ligne manager ne contient pas 5 éléments mais " + splitByElement.size() + " => " + ligneManager);
+            throw new BatchException("La ligne manager ne contient pas 5 éléments mais " + splitByElement.size());
         }
     }
 
@@ -166,75 +183,115 @@ public class MyRunner implements CommandLineRunner {
         List<String> splitByElement = new ArrayList<>(Arrays.asList(ligneTechnicien.split(",")));
         Technicien technicien = new Technicien();
 
+        // Vérifie que la ligne dispose du bon nombre d'élément //
+        // Renvoie une Exception si False                       //
         if (splitByElement.size() == NB_CHAMPS_TECHNICIEN) {
 
+            // Effectue la conversion du Grade du type String à Integer          //
+            // Renvoie une erreur si : -L'Integer n'est pas compris entre 1 et 5 //
+            //                         -La conversion de format echoue           //
             try {
                 technicien.setGrade(Integer.parseInt(splitByElement.get(5)));
             } catch (TechnicienException e) {
                 throw new BatchException("Le grade doit être compris entre 1 et 5 : " + splitByElement.get(5));
             } catch (Exception e) {
-                throw new BatchException(splitByElement.get(5) + " n'est pas un nombre valide pour un salaire => " + ligneTechnicien);
+                throw new BatchException(splitByElement.get(5) + " n'est pas un nombre valide pour un salaire");
             }
 
             infosEmploye(technicien, ligneTechnicien, splitByElement);
 
+            // Vérifie que le matricule du manager dont dépend le technicien, correspond à l'expression régulière //
             if ((splitByElement.get(6)).matches(REGEX_MATRICULE_MANAGER)){
-                if(managerRepository.findByMatricule(splitByElement.get(6)) != null ) {
-                    technicien.setManager(managerRepository.findByMatricule(splitByElement.get(6)));
-                } else {
-                    throw new BatchException("Le manager de matricule " + splitByElement.get(6) + " n'a pas été trouvé dans le fichier ou en base de données => " + ligneTechnicien);
+
+                // Compare le matricule manager présent dans la ligne avec ceux présent dans le fichiez csv //
+                // Set le manager si True                                                                   //
+                for(int i = 0; i < employes.size() ; i++){
+
+                    // Compare le matricule manager présent dans la ligne avec ceux présent en base //
+                    // Set le manager si True                                                       //
+                    if(managerRepository.findByMatricule(splitByElement.get(6)) != null ) {
+                        technicien.setManager(managerRepository.findByMatricule(splitByElement.get(6)));
+                    }
+
+                    // Compare le matricule manager présent dans la ligne avec ceux présent dans le fichiez csv //
+                    // Set le manager si True                                                                   //
+                    else if (splitByElement.get(6).matches(employes.get(i).getMatricule())){
+                        technicien.setManager((Manager) employes.get(i));
+                    }
+
+                    else {
+                        throw new BatchException("Le manager de matricule " + splitByElement.get(6) + " n'a pas été trouvé dans le fichier ou en base de données");
+                    }
                 }
 
-
-                /*for(int i = 0; i < employes.size() ; i++){
-                    if()
-                }*/
-
             } else {
-                throw new BatchException("La châine " + splitByElement.get(6) + " ne respecte pas l'expression régulière ^M[0-9]{5}$ => " + ligneTechnicien);
+                throw new BatchException("La châine " + splitByElement.get(6) + " ne respecte pas l'expression régulière ^M[0-9]{5}$");
             }
 
 
         } else {
-            throw new BatchException("La ligne technicien ne contient pas 7 éléments mais " + splitByElement.size() + " => " + ligneTechnicien);
+            throw new BatchException("La ligne technicien ne contient pas 7 éléments mais " + splitByElement.size());
         }
     }
 
+    /**
+     * Fonction permettant de modifier le format des données pour passer d'un format String à un format Date
+     * @param dateString
+     * @return date
+     */
     private LocalDate stringToDate(String dateString) {
         LocalDate date = DateTimeFormat.forPattern("dd/MM/yyyy").parseLocalDate(dateString);
         return date;
     }
 
+    /**
+     * Fonction permettant de regrouper les informations communes aux employés, peut-importe qu'il soit manager, tech ou commercial
+     * @param employe, instance d'employe se spécialisant ensuit en manager, tech ou commercial
+     * @param ligneEmploye, correspondant à la ligne de texte du fichier csv que l'on traite
+     * @param splitByElement, correspondant à la fonction permettant de découper la ligne de texte en incrémentant chaque mot dans une liste
+     * @return employe
+     * @throws BatchException , divers exception détaillé si dessous
+     */
     private Employe infosEmploye (Employe employe, String ligneEmploye, List<String> splitByElement ) throws BatchException{
 
+        // Vérifie que le matricule de l'employé correspond à l'expression régulière //
+        // Set le matricule si True                                                  //
         if ((splitByElement.get(0)).matches(REGEX_MATRICULE)) {
             employe.setMatricule(splitByElement.get(0));
         } else {
-            throw new BatchException("La châine " + splitByElement.get(0) + " ne respecte pas l'expression régulière ^[MTC][0-9]{5}$ => " + ligneEmploye);
+            throw new BatchException("La châine " + splitByElement.get(0) + " ne respecte pas l'expression régulière ^[MTC][0-9]{5}$");
         }
 
+        // Vérifie que le nom de l'employé correspond à l'expression régulière //
+        // Set le nom si True                                                  //
         if ((splitByElement.get(1)).matches(REGEX_NOM)){
             employe.setNom(splitByElement.get(1));
         } else {
-            throw new BatchException("Le nom " + splitByElement.get(1) + " n'est pas conforme => " + ligneEmploye);
+            throw new BatchException("Le nom " + splitByElement.get(1) + " n'est pas conforme");
         }
 
+        // Vérifie que le prénom de l'employé correspond à l'expression régulière //
+        // Set le prénom si True                                                  //
         if ((splitByElement.get(2)).matches(REGEX_PRENOM)){
             employe.setPrenom(splitByElement.get(2));
         } else {
-            throw new BatchException("Le nom " + splitByElement.get(2) + " n'est pas conforme => " + ligneEmploye);
+            throw new BatchException("Le nom " + splitByElement.get(2) + " n'est pas conforme");
         }
 
+        // Vérifie que la date est bien au bon format  //
+        // Set la date si True                         //
         try {
             employe.setDateEmbauche(stringToDate(splitByElement.get(3)));
         } catch (Exception e) {
-            throw new BatchException(splitByElement.get(3) + " ne respecte pas le format de date dd/MM/yyyy => " + ligneEmploye);
+            throw new BatchException(splitByElement.get(3) + " ne respecte pas le format de date dd/MM/yyyy");
         }
 
+        // Convertit le salaire du type String à Double                      //
+        // Renvoie une exception si mauvais format ou problème de conversion //
         try {
             employe.setSalaire(Double.parseDouble(splitByElement.get(4)));
         } catch (Exception e){
-            throw new BatchException(splitByElement.get(4) + " n'est pas un nombre valide pour un salaire => " + ligneEmploye);
+            throw new BatchException(splitByElement.get(4) + " n'est pas un nombre valide pour un salaire");
         }
 
         return employe;
