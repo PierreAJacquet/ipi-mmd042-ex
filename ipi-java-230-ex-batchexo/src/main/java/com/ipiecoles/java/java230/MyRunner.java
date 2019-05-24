@@ -130,7 +130,7 @@ public class MyRunner implements CommandLineRunner {
         // Renvoie une Exception si False                       //
         if (splitByElement.size() == NB_CHAMPS_COMMERCIAL) {
 
-            infosEmploye(commercial, ligneCommercial, splitByElement);
+            infosEmploye(commercial, splitByElement);
 
             // Effectue la conversion du Grade du type String à Double           //
             // Renvoie une erreur si : -La conversion de format echoue           //
@@ -167,7 +167,7 @@ public class MyRunner implements CommandLineRunner {
         // Renvoie une Exception si False                       //
         if (splitByElement.size() == NB_CHAMPS_MANAGER) {
 
-         infosEmploye(manager, ligneManager, splitByElement);
+         infosEmploye(manager, splitByElement);
 
         }else {
             throw new BatchException("La ligne manager ne contient pas 5 éléments mais " + splitByElement.size());
@@ -198,7 +198,7 @@ public class MyRunner implements CommandLineRunner {
                 throw new BatchException(splitByElement.get(5) + " n'est pas un nombre valide pour un salaire");
             }
 
-            infosEmploye(technicien, ligneTechnicien, splitByElement);
+            infosEmploye(technicien, splitByElement);
 
             // Vérifie que le matricule du manager dont dépend le technicien, correspond à l'expression régulière //
             if ((splitByElement.get(6)).matches(REGEX_MATRICULE_MANAGER)){
@@ -247,12 +247,11 @@ public class MyRunner implements CommandLineRunner {
     /**
      * Fonction permettant de regrouper les informations communes aux employés, peut-importe qu'il soit manager, tech ou commercial
      * @param employe, instance d'employe se spécialisant ensuit en manager, tech ou commercial
-     * @param ligneEmploye, correspondant à la ligne de texte du fichier csv que l'on traite
      * @param splitByElement, correspondant à la fonction permettant de découper la ligne de texte en incrémentant chaque mot dans une liste
      * @return employe
      * @throws BatchException , divers exception détaillé si dessous
      */
-    private Employe infosEmploye (Employe employe, String ligneEmploye, List<String> splitByElement ) throws BatchException{
+    private Employe infosEmploye (Employe employe, List<String> splitByElement ) throws BatchException{
 
         // Vérifie que le matricule de l'employé correspond à l'expression régulière //
         // Set le matricule si True                                                  //
