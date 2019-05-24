@@ -203,19 +203,21 @@ public class MyRunner implements CommandLineRunner {
             // Vérifie que le matricule du manager dont dépend le technicien, correspond à l'expression régulière //
             if ((splitByElement.get(6)).matches(REGEX_MATRICULE_MANAGER)){
 
+                // Compare le matricule manager présent dans la ligne avec ceux présent en base //
+                // Set le manager si True                                                       //
+                if(managerRepository.findByMatricule(splitByElement.get(6)) != null ) {
+                    technicien.setManager(managerRepository.findByMatricule(splitByElement.get(6)));
+                } else {
+                    throw new BatchException("Le manager de matricule " + splitByElement.get(6) + " n'a pas été trouvé dans le fichier ou en base de données");
+                }
+
                 // Compare le matricule manager présent dans la ligne avec ceux présent dans le fichiez csv //
                 // Set le manager si True                                                                   //
                 for(int i = 0; i < employes.size() ; i++){
 
-                    // Compare le matricule manager présent dans la ligne avec ceux présent en base //
-                    // Set le manager si True                                                       //
-                    if(managerRepository.findByMatricule(splitByElement.get(6)) != null ) {
-                        technicien.setManager(managerRepository.findByMatricule(splitByElement.get(6)));
-                    }
-
                     // Compare le matricule manager présent dans la ligne avec ceux présent dans le fichiez csv //
                     // Set le manager si True                                                                   //
-                    else if (splitByElement.get(6).matches(employes.get(i).getMatricule())){
+                    if (splitByElement.get(6).matches(employes.get(i).getMatricule())){
                         technicien.setManager((Manager) employes.get(i));
                     }
 

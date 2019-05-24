@@ -4,6 +4,7 @@
     <list default="true" id="b99b61be-3335-40ff-ab5e-1fadf6ccefe1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/ipiecoles/java/java230/MyRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ipiecoles/java/java230/MyRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ipiecoles/java/java230/MyRunner.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/ipiecoles/java/java230/MyRunner.class" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,8 +18,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/ipiecoles/java/java230/MyRunner.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1308">
-              <caret line="207" column="58" lean-forward="true" selection-start-line="207" selection-start-column="58" selection-end-line="207" selection-end-column="58" />
+            <state relative-caret-position="1854">
+              <caret line="258" column="87" lean-forward="true" selection-start-line="258" selection-start-column="87" selection-end-line="258" selection-end-column="87" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -250,7 +251,7 @@
       <updated>1558595551309</updated>
       <workItem from="1558595554338" duration="13343000" />
       <workItem from="1558614100924" duration="8217000" />
-      <workItem from="1558681772692" duration="3195000" />
+      <workItem from="1558681772692" duration="8475000" />
     </task>
     <task id="LOCAL-00001" summary="Tp pratiquement finie">
       <created>1558621880054</created>
@@ -259,17 +260,31 @@
       <option name="project" value="LOCAL" />
       <updated>1558621880054</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Tp finie.&#10;Ajout des commentaires.">
+      <created>1558685043734</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1558685043734</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Fix">
+      <created>1558686244691</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1558686244691</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24755000" />
+    <option name="totallyTimeSpent" value="30035000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18791947" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13624161" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -278,7 +293,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.39970717" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.28111273" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -306,7 +321,9 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Tp pratiquement finie" />
-    <option name="LAST_COMMIT_MESSAGE" value="Tp pratiquement finie" />
+    <MESSAGE value="Tp finie.&#10;Ajout des commentaires." />
+    <MESSAGE value="Fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/pom.xml">
@@ -362,8 +379,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ipiecoles/java/java230/MyRunner.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1308">
-          <caret line="207" column="58" lean-forward="true" selection-start-line="207" selection-start-column="58" selection-end-line="207" selection-end-column="58" />
+        <state relative-caret-position="1854">
+          <caret line="258" column="87" lean-forward="true" selection-start-line="258" selection-start-column="87" selection-end-line="258" selection-end-column="87" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
